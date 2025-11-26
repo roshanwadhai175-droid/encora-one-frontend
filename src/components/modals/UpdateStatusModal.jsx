@@ -19,9 +19,15 @@ const UpdateStatusModal = ({ isOpen, onClose, complaint, onUpdate }) => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
+            // Map status strings to Enum Integers
+            let statusInt = 1; // Pending
+            if (status === 'In Progress') statusInt = 2;
+            else if (status === 'Resolved') statusInt = 3;
+            else if (status === 'Returned') statusInt = 5; // Returned
+
             await api.put('/Complaint/update-status', {
                 complaintId: complaint.complaintId,
-                status: status === 'In Progress' ? 2 : status === 'Resolved' ? 3 : 1, 
+                status: statusInt, 
                 remarks
             });
             onUpdate(); 
@@ -56,15 +62,16 @@ const UpdateStatusModal = ({ isOpen, onClose, complaint, onUpdate }) => {
 
                                 <div>
                                     <label className="block text-sm font-semibold text-slate-700 mb-1">Status</label>
-                                    <select value={status} onChange={e => setStatus(e.target.value)} className="w-full px-4 py-2 border rounded-xl" required>
+                                    <select value={status} onChange={e => setStatus(e.target.value)} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all" required>
                                         <option value="Pending">Pending</option>
                                         <option value="In Progress">In Progress</option>
+                                        <option value="Returned">Returned (Back to Employee)</option>
                                         <option value="Resolved">Resolved</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-slate-700 mb-1">Manager Remarks</label>
-                                    <textarea value={remarks} onChange={e => setRemarks(e.target.value)} rows="3" className="w-full px-4 py-2 border rounded-xl" placeholder="Add comments regarding the resolution..." />
+                                    <textarea value={remarks} onChange={e => setRemarks(e.target.value)} rows="3" className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all" placeholder="Add comments regarding the resolution..." />
                                 </div>
                                 <button disabled={isSubmitting} className="w-full py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition flex items-center justify-center gap-2">
                                     {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}

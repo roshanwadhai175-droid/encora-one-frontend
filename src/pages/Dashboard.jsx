@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, AlertCircle, CheckCircle, Plus, CheckSquare, MessageSquare, LogOut, Search, Filter, Eye } from 'lucide-react';
+import { FileText, AlertCircle, CheckCircle, Plus, CheckSquare, MessageSquare, LogOut, Search, Filter, Eye, Pencil, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 import Sidebar from '../components/layout/Sidebar';
 import StatusBadge from '../components/ui/StatusBadge';
 import CreateComplaintModal from '../components/modals/CreateComplaintModal';
+import EditComplaintModal from '../components/modals/EditComplaintModal';
 import UpdateStatusModal from '../components/modals/UpdateStatusModal';
-import ViewComplaintModal from '../components/modals/ViewComplaintModal'; // Import the new modal
+import ViewComplaintModal from '../components/modals/ViewComplaintModal';
+import DeleteConfirmationModal from '../components/modals/DeleteConfirmationModal'; // New Import
 
 const Dashboard = () => {
     const { user, logout } = useAuth();
@@ -16,9 +18,14 @@ const Dashboard = () => {
     // Modal States
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-    const [isViewModalOpen, setIsViewModalOpen] = useState(false); // New State
+    const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // New State
     
     const [selectedComplaint, setSelectedComplaint] = useState(null);
+    const [complaintToDelete, setComplaintToDelete] = useState(null); // New State
+    const [isDeleting, setIsDeleting] = useState(false); // New State
+
     const [complaints, setComplaints] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('All');
@@ -55,16 +62,32 @@ const Dashboard = () => {
         fetchComplaints();
     };
 
-    // Handler for Manager Update (Review)
-    const openUpdateModal = (c) => {
-        setSelectedComplaint(c);
-        setIsUpdateModalOpen(true);
+    // Handlers
+    const openUpdateModal = (c) => { setSelectedComplaint(c); setIsUpdateModalOpen(true); };
+    const openViewModal = (c) => { setSelectedComplaint(c); setIsViewModalOpen(true); };
+    const openEditModal = (c) => { setSelectedComplaint(c); setIsEditModalOpen(true); };
+
+    // Trigger Delete Modal
+    const initiateCancel = (id) => {
+        setComplaintToDelete(id);
+        setIsDeleteModalOpen(true);
     };
 
-    // Handler for View Details
-    const openViewModal = (c) => {
-        setSelectedComplaint(c);
-        setIsViewModalOpen(true);
+    // Actual Delete Logic
+    const confirmDelete = async () => {
+        if (!complaintToDelete) return;
+        
+        setIsDeleting(true);
+        try {
+            await api.delete(`/Complaint/${complaintToDelete}`);
+            fetchComplaints();
+            setIsDeleteModalOpen(false);
+            setComplaintToDelete(null);
+        } catch (error) {
+            alert("Failed to cancel: " + (error.response?.data?.message || "Unknown error"));
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     const filteredComplaints = complaints.filter(c => {
@@ -167,6 +190,8 @@ const Dashboard = () => {
                                                 <option value="Pending">Pending</option>
                                                 <option value="In Progress">In Progress</option>
                                                 <option value="Resolved">Resolved</option>
+                                                <option value="Returned">Returned</option>
+                                                <option value="Cancelled">Cancelled</option>
                                             </select>
                                         </div>
                                     </div>
@@ -191,19 +216,27 @@ const Dashboard = () => {
                                                                 </p>
                                                             </div>
                                                         </div>
-                                                        <div className="flex items-center gap-3">
+                                                        <div className="flex items-center gap-2">
                                                             <StatusBadge status={c.status} />
                                                             
-                                                            {/* View Details Button (Visible to All) */}
-                                                            <button 
-                                                                onClick={() => openViewModal(c)} 
-                                                                className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                                                title="View Details"
-                                                            >
+                                                            {/* View Details (Everyone) */}
+                                                            <button onClick={() => openViewModal(c)} className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View Details">
                                                                 <Eye className="w-4 h-4" />
                                                             </button>
 
-                                                            {/* Update Button (Manager/Admin Only) */}
+                                                            {/* Employee Actions (Edit/Cancel - ONLY if Pending) */}
+                                                            {!canManage && c.status === 'Pending' && (
+                                                                <>
+                                                                    <button onClick={() => openEditModal(c)} className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="Edit">
+                                                                        <Pencil className="w-4 h-4" />
+                                                                    </button>
+                                                                    <button onClick={() => initiateCancel(c.complaintId)} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Cancel">
+                                                                        <Trash2 className="w-4 h-4" />
+                                                                    </button>
+                                                                </>
+                                                            )}
+
+                                                            {/* Manager Actions */}
                                                             {canManage && (
                                                                 <button onClick={() => openUpdateModal(c)} className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg text-sm font-medium transition-colors flex items-center gap-1">
                                                                     <CheckSquare className="w-4 h-4" /> Review
@@ -232,9 +265,19 @@ const Dashboard = () => {
                 </main>
             </div>
             
+            {/* Modals */}
             <CreateComplaintModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} onComplaintCreated={handleAction} />
             <UpdateStatusModal isOpen={isUpdateModalOpen} onClose={() => setIsUpdateModalOpen(false)} complaint={selectedComplaint} onUpdate={handleAction} />
             <ViewComplaintModal isOpen={isViewModalOpen} onClose={() => setIsViewModalOpen(false)} complaint={selectedComplaint} />
+            <EditComplaintModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} complaint={selectedComplaint} onUpdate={handleAction} />
+            
+            {/* Delete Confirmation Modal */}
+            <DeleteConfirmationModal 
+                isOpen={isDeleteModalOpen} 
+                onClose={() => setIsDeleteModalOpen(false)} 
+                onConfirm={confirmDelete}
+                isDeleting={isDeleting}
+            />
         </div>
     );
 };

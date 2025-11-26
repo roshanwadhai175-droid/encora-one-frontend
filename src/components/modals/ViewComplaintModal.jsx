@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Calendar, User, Building2, Clock, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { X, User, Building2, Clock, CheckCircle, AlertCircle, Loader2, RotateCcw } from 'lucide-react';
 
 const ViewComplaintModal = ({ isOpen, onClose, complaint }) => {
     if (!complaint) return null;
@@ -10,6 +10,7 @@ const ViewComplaintModal = ({ isOpen, onClose, complaint }) => {
         switch (normalized) {
             case 'pending': return 'text-orange-600 bg-orange-50 border-orange-200';
             case 'inprogress': return 'text-blue-600 bg-blue-50 border-blue-200';
+            case 'returned': return 'text-purple-600 bg-purple-50 border-purple-200';
             case 'resolved': return 'text-emerald-600 bg-emerald-50 border-emerald-200';
             default: return 'text-slate-600 bg-slate-50 border-slate-200';
         }
@@ -20,6 +21,7 @@ const ViewComplaintModal = ({ isOpen, onClose, complaint }) => {
         switch (normalized) {
             case 'pending': return <AlertCircle className="w-4 h-4" />;
             case 'inprogress': return <Loader2 className="w-4 h-4 animate-spin" />;
+            case 'returned': return <RotateCcw className="w-4 h-4" />;
             case 'resolved': return <CheckCircle className="w-4 h-4" />;
             default: return <Clock className="w-4 h-4" />;
         }
