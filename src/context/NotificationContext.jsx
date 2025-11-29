@@ -4,12 +4,17 @@ import * as signalR from '@microsoft/signalr';
 const NotificationContext = createContext();
 
 export const NotificationProvider = ({ children }) => {
+    // Stores notifications for the history panel
     const [notifications, setNotifications] = useState([]);
+    // Stores active toasts (auto-dismissing)
+    const [toasts, setToasts] = useState([]);
+    // Unread count for the badge
+    const [unreadCount, setUnreadCount] = useState(0);
 
     useEffect(() => {
         // Create Connection
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("https://localhost:7001/notificationHub") // Your API URL
+            .withUrl("https://localhost:7001/notificationHub")
             .withAutomaticReconnect()
             .build();
 
@@ -23,14 +28,18 @@ export const NotificationProvider = ({ children }) => {
             const newNotification = {
                 id: Date.now(),
                 message: message,
-                time: new Date().toLocaleTimeString()
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                read: false
             };
             
+            // Add to History
             setNotifications(prev => [newNotification, ...prev]);
+            setUnreadCount(prev => prev + 1);
 
-            // Auto remove after 5 seconds
+            // Add to Toast (Auto-dismiss logic)
+            setToasts(prev => [newNotification, ...prev]);
             setTimeout(() => {
-                removeNotification(newNotification.id);
+                removeToast(newNotification.id);
             }, 5000);
         });
 
@@ -39,12 +48,29 @@ export const NotificationProvider = ({ children }) => {
         };
     }, []);
 
-    const removeNotification = (id) => {
-        setNotifications(prev => prev.filter(n => n.id !== id));
+    const removeToast = (id) => {
+        setToasts(prev => prev.filter(n => n.id !== id));
+    };
+
+    const markAllAsRead = () => {
+        setUnreadCount(0);
+        setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    };
+
+    const clearNotifications = () => {
+        setNotifications([]);
+        setUnreadCount(0);
     };
 
     return (
-        <NotificationContext.Provider value={{ notifications, removeNotification }}>
+        <NotificationContext.Provider value={{ 
+            notifications, 
+            toasts, 
+            unreadCount, 
+            removeToast, 
+            markAllAsRead, 
+            clearNotifications 
+        }}>
             {children}
         </NotificationContext.Provider>
     );

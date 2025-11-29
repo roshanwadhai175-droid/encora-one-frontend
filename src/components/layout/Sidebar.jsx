@@ -7,21 +7,22 @@ import {
     LogOut,
     List
 } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
-import ProfileModal from '../modals/ProfileModal';
- 
- 
+import { useAuth } from '../../context/AuthContext.jsx';
+import ProfileModal from '../modals/ProfileModal.jsx';
+import NotificationPanel from '../ui/NotificationPanel.jsx'; // ✅ Re-added Import
+
+
 const Sidebar = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
- 
+
     // State for controlling the Profile Modal
     const [isProfileOpen, setIsProfileOpen] = useState(false);
    
     // Determine user roles for conditional rendering
     const isManagerOrAdmin = user?.role === 'Manager' || user?.role === 'Admin';
     const isAdmin = user?.role === 'Admin';
- 
+
     // Function to determine the portal text based on role
     const getPortalText = (role) => {
         switch (role) {
@@ -36,7 +37,7 @@ const Sidebar = () => {
     };
    
     const portalText = getPortalText(user?.role);
- 
+
     // Common Styles for Links (Refined for readability)
     const linkClass = ({ isActive }) => {
         const baseClasses = 'w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 group';
@@ -45,27 +46,34 @@ const Sidebar = () => {
        
         return `${baseClasses} ${isActive ? activeClasses : inactiveClasses}`;
     };
- 
+
     const handleLogout = () => {
         logout();
         navigate('/login');
     };
- 
+
     return (
         <>
             <div className="w-72 bg-slate-900 text-white p-6 flex flex-col hidden lg:flex shadow-xl z-20 h-screen sticky top-0 border-r border-slate-800">
                
                 {/* Logo Area */}
-                <div className="flex items-center gap-3 mb-12">
-                    <div className="w-10 h-10 bg-gradient-to-tr from-violet-600 to-fuchsia-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-900/50">
-                        <FileText className="w-6 h-6 text-white" />
+                <div className="flex items-center mb-12">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gradient-to-tr from-violet-600 to-fuchsia-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-900/50">
+                            <FileText className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                            <h1 className="font-bold text-xl tracking-tight">EncoraOne</h1>
+                            <p className="text-xs text-slate-400 font-medium">{portalText}</p>
+                        </div>
                     </div>
-                    <div>
-                        <h1 className="font-bold text-xl tracking-tight">EncoraOne</h1>
-                        <p className="text-xs text-slate-400 font-medium">{portalText}</p>
+                    
+                    {/* ✅ Notification Bell (Pushed to right) */}
+                    <div className="ml-auto">
+                        <NotificationPanel />
                     </div>
                 </div>
- 
+
                 {/* Navigation Links */}
                 <nav className="flex-1 space-y-2">
                     {/* Overview Link */}
@@ -81,17 +89,16 @@ const Sidebar = () => {
                             <span className="font-medium">Reports</span>
                         </NavLink>
                     )}
- 
+
                     {/* Admin Management Link (Visible to Admin only) */}
                     {isAdmin && (
-                        // 💡 This links to the new admin page you created
                         <NavLink to="/admin" className={linkClass}>
                             <User className="w-5 h-5" />
                             <span className="font-medium">User Management</span>
                         </NavLink>
                     )}
                 </nav>
- 
+
                 {/* User Footer */}
                 <div className="pt-6 border-t border-slate-800">
                    
@@ -110,7 +117,7 @@ const Sidebar = () => {
                             <p className="text-xs text-slate-400 truncate">{user?.role}</p>
                         </div>
                     </div>
- 
+
                     <button
                         onClick={handleLogout}
                         className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition-colors text-sm font-medium border border-transparent hover:border-red-500/20"
@@ -119,7 +126,7 @@ const Sidebar = () => {
                     </button>
                 </div>
             </div>
- 
+
             {/* The Profile Modal component */}
             <ProfileModal
                 isOpen={isProfileOpen}
@@ -129,5 +136,5 @@ const Sidebar = () => {
         </>
     );
 };
- 
+
 export default Sidebar;
