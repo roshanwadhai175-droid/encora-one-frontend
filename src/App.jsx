@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import Reports from './pages/Reports';
 import MainLayout from './components/layout/MainLayout';
 import NotificationToast from './components/ui/NotificationToast'; // NEW Import
+import AdminPage from './pages/AdminPage';
 
 const ProtectedRoute = ({ children, roleRequired }) => {
     const { user, loading } = useAuth();
@@ -32,7 +33,7 @@ const App = () => {
                         
                         <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
                             <Route path="/dashboard" element={<Dashboard />} />
-                            
+                            <Route path="/admin" element={<AdminPage/>}/>
                             <Route 
                                 path="/reports" 
                                 element={
@@ -42,8 +43,10 @@ const App = () => {
                                 } 
                             />
                         </Route>
+
                         
                         <Route path="/" element={<Navigate to="/dashboard" />} />
+                        
                     </Routes>
                 </Router>
             </NotificationProvider>
