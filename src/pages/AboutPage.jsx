@@ -44,7 +44,7 @@ const teamMembers = [
 // --- COMPONENTS ---
 
 const SectionHeader = ({ title, subtitle }) => (
-  <div className="text-center mb-20">
+  <div className="text-center mb-20 relative z-10">
     <motion.h2 
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -72,7 +72,7 @@ const FeatureCard = ({ icon: Icon, title, desc, color, delay }) => (
     viewport={{ once: true }}
     transition={{ duration: 0.5, delay }}
     whileHover={{ y: -10 }}
-    className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] hover:border-white/20 transition-all group relative overflow-hidden"
+    className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] hover:border-white/20 transition-all group relative overflow-hidden backdrop-blur-sm"
   >
     <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 bg-gradient-to-br ${color} to-transparent transition-opacity duration-500`} />
     <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -88,7 +88,7 @@ const TechCard = ({ title, stack, icon: Icon }) => (
     initial={{ opacity: 0, scale: 0.9 }}
     whileInView={{ opacity: 1, scale: 1 }}
     viewport={{ once: true }}
-    className="flex flex-col items-center text-center p-6 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm"
+    className="flex flex-col items-center text-center p-6 rounded-2xl border border-white/10 bg-black/60 backdrop-blur-md"
   >
     <div className="mb-4 p-4 rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20">
       <Icon size={32} />
@@ -127,10 +127,11 @@ const AboutPage = () => {
       {/* --- HERO SECTION --- */}
       <div className="relative w-full h-screen overflow-hidden bg-[#050505]">
         
-        {/* 1. Spline 3D Viewer Background with Dramatic Entrance */}
+        {/* 1. Spline 3D Viewer Background (Hero) */}
+        {/* h-[115%] pushes watermark off screen */}
         <div className={`absolute inset-x-0 top-0 h-[115%] z-0 transition-all duration-[1500ms] ease-out transform ${isLoaded ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-110 blur-lg'}`}>
           <spline-viewer 
-            url="https://prod.spline.design/a6XkQdgy5sjlsweN/scene.splinecode"
+            url="https://prod.spline.design/PXx275Yj23goXwsK/scene.splinecode"
             style={{ width: '100%', height: '100%' }}
           />
         </div>
@@ -285,10 +286,10 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* 5. TECH STACK */}
+      {/* 5. TECH STACK (SEPARATED FROM ROBOT) */}
       <section className="py-32 px-6 border-t border-white/10 bg-[#080808]">
         <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-white mb-16">Powered By Modern Engineering</h2>
+          <h2 className="text-3xl font-bold text-white mb-16 drop-shadow-lg">Powered By Modern Engineering</h2>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <TechCard title="Frontend" stack="React + Tailwind + Framer" icon={Code2} />
@@ -299,10 +300,34 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="py-12 text-center text-slate-600 text-sm border-t border-white/5">
-        <p>&copy; 2025 EncoraOne. Transforming Workplaces.</p>
-      </footer>
+      {/* 6. BOTTOM ROBOT VISUAL SECTION + FOOTER TEXT OVERLAY */}
+      <div className="relative w-full h-[600px] overflow-hidden bg-[#050505] border-t border-white/5">
+         
+         {/* Spline Viewer Container - Scaled to hide watermark */}
+         <div className={`absolute inset-x-0 top-0 h-[120%] transition-all duration-[2000ms] ${isLoaded ? 'opacity-100 blur-0' : 'opacity-0 blur-lg'}`}>
+           <spline-viewer 
+              url="https://prod.spline.design/a6XkQdgy5sjlsweN/scene.splinecode"
+              style={{ width: '100%', height: '100%' }}
+           />
+        </div>
+
+        {/* Vignette to blend edges */}
+        <div className="absolute inset-0 pointer-events-none bg-radial-gradient-fade" />
+
+        {/* COPYRIGHT OVERLAY (No Background, No Footer) */}
+        <div className="absolute bottom-10 inset-x-0 z-20 pointer-events-none flex justify-center">
+            <p className="text-slate-500 text-xs font-medium uppercase tracking-[0.2em] opacity-80 mix-blend-screen">
+                &copy; 2025 EncoraOne. Transforming Workplaces.
+            </p>
+        </div>
+      </div>
+
+      <style>{`
+        .bg-radial-gradient-fade {
+            background: radial-gradient(circle at center, transparent 0%, #050505 100%);
+            opacity: 0.4;
+        }
+      `}</style>
 
     </div>
   );
