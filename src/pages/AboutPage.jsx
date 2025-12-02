@@ -1,51 +1,56 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Zap, Shield, MessageSquare, Clock, 
-  Server, Database, Code2, Globe 
+import {
+  Zap, Shield, MessageSquare, Clock,
+  Server, Database, Code2, Globe
 } from 'lucide-react';
 import GlassNavbar from '../components/ui/GlassNavbar.jsx';
 import InfiniteMenu from '../components/ui/InfiniteMenu.jsx';
-
+ 
 // --- TEAM DATA ---
 const teamMembers = [
   {
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop',
+    // Replaced the internal Microsoft Teams link with a publicly accessible image URL
+    image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1000&auto=format&fit=crop', 
     link: '#',
     title: 'Roshan Wadhai',
     description: 'Full Stack Developer'
   },
   {
+    // This image is valid
     image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1000&auto=format&fit=crop',
     link: '#',
     title: 'Sangram Sankpal',
     description: 'Backend Developer'
   },
   {
+    // This image is valid
     image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1000&auto=format&fit=crop',
     link: '#',
     title: 'Sujal Koli',
     description: 'Full Stack Developer'
   },
   {
+    // This image is valid
     image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1000&auto=format&fit=crop',
     link: '#',
     title: 'Yashraj Chavan',
-    description: 'Deadly Frontend Developer'
+    description: 'Frontend Developer'
   },
   {
+    // This image is valid
     image: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=1000&auto=format&fit=crop',
     link: '#',
-    title: 'Dipanshu Mondal',
+    title: 'Dipanshu Mandal',
     description: 'Frontend Developer'
   }
 ];
-
+ 
 // --- COMPONENTS ---
-
+ 
 const SectionHeader = ({ title, subtitle }) => (
-  <div className="text-center mb-20">
-    <motion.h2 
+  <div className="text-center mb-20 relative z-10">
+    <motion.h2
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -53,7 +58,7 @@ const SectionHeader = ({ title, subtitle }) => (
     >
       {title}
     </motion.h2>
-    <motion.p 
+    <motion.p
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -64,7 +69,7 @@ const SectionHeader = ({ title, subtitle }) => (
     </motion.p>
   </div>
 );
-
+ 
 const FeatureCard = ({ icon: Icon, title, desc, color, delay }) => (
   <motion.div
     initial={{ opacity: 0, y: 30 }}
@@ -72,7 +77,7 @@ const FeatureCard = ({ icon: Icon, title, desc, color, delay }) => (
     viewport={{ once: true }}
     transition={{ duration: 0.5, delay }}
     whileHover={{ y: -10 }}
-    className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] hover:border-white/20 transition-all group relative overflow-hidden"
+    className="p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] hover:border-white/20 transition-all group relative overflow-hidden backdrop-blur-sm"
   >
     <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 bg-gradient-to-br ${color} to-transparent transition-opacity duration-500`} />
     <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -82,13 +87,13 @@ const FeatureCard = ({ icon: Icon, title, desc, color, delay }) => (
     <p className="text-slate-400 leading-relaxed">{desc}</p>
   </motion.div>
 );
-
+ 
 const TechCard = ({ title, stack, icon: Icon }) => (
-  <motion.div 
+  <motion.div
     initial={{ opacity: 0, scale: 0.9 }}
     whileInView={{ opacity: 1, scale: 1 }}
     viewport={{ once: true }}
-    className="flex flex-col items-center text-center p-6 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm"
+    className="flex flex-col items-center text-center p-6 rounded-2xl border border-white/10 bg-black/60 backdrop-blur-md"
   >
     <div className="mb-4 p-4 rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20">
       <Icon size={32} />
@@ -97,14 +102,14 @@ const TechCard = ({ title, stack, icon: Icon }) => (
     <p className="text-sm text-slate-500 font-mono">{stack}</p>
   </motion.div>
 );
-
+ 
 const AboutPage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
-
+ 
   useEffect(() => {
     // Dynamically load the Spline Viewer script
     const scriptUrl = 'https://unpkg.com/@splinetool/viewer@1.12.5/build/spline-viewer.js';
-    
+   
     // Check if script already exists to prevent duplicate loading
     if (!document.querySelector(`script[src="${scriptUrl}"]`)) {
       const script = document.createElement('script');
@@ -119,27 +124,28 @@ const AboutPage = () => {
       setIsLoaded(true);
     }
   }, []);
-
+ 
   return (
     <div className="min-h-screen bg-[#050505] text-white font-sans selection:bg-violet-500 selection:text-white overflow-x-hidden">
       <GlassNavbar />
-      
+     
       {/* --- HERO SECTION --- */}
       <div className="relative w-full h-screen overflow-hidden bg-[#050505]">
-        
-        {/* 1. Spline 3D Viewer Background with Dramatic Entrance */}
+       
+        {/* 1. Spline 3D Viewer Background (Hero) */}
+        {/* h-[115%] pushes watermark off screen */}
         <div className={`absolute inset-x-0 top-0 h-[115%] z-0 transition-all duration-[1500ms] ease-out transform ${isLoaded ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-110 blur-lg'}`}>
-          <spline-viewer 
-            url="https://prod.spline.design/a6XkQdgy5sjlsweN/scene.splinecode"
+          <spline-viewer
+            url="https://prod.spline.design/PXx275Yj23goXwsK/scene.splinecode"
             style={{ width: '100%', height: '100%' }}
           />
         </div>
-
+ 
         {/* 2. Hero Content Overlay */}
         <div className="relative z-10 flex flex-col items-center justify-end h-full px-6 pb-20 pointer-events-none">
           <div className="pointer-events-auto max-w-3xl mx-auto text-center space-y-3">
-            
-            <motion.h1 
+           
+            <motion.h1
               initial={{ opacity: 0, y: 30, letterSpacing: '0em' }}
               animate={{ opacity: 1, y: 0, letterSpacing: '-0.02em' }}
               transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
@@ -153,7 +159,7 @@ const AboutPage = () => {
                 Accountability.
               </span>
             </motion.h1>
-
+ 
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -166,15 +172,15 @@ const AboutPage = () => {
               <span className="w-1 h-1 bg-violet-500 rounded-full animate-pulse" />
               <span>Shift</span>
             </motion.div>
-
+ 
           </div>
         </div>
       </div>
-
+ 
       {/* 2. MEET THE TEAM (INFINITE MENU) */}
       <section className="py-32 relative bg-[#080808] border-t border-white/5">
-           <SectionHeader 
-            title="Meet The Team" 
+           <SectionHeader
+            title="Meet The Team"
             subtitle="The minds behind the magic of EncoraOne."
           />
           {/* The Infinite Menu Container */}
@@ -182,13 +188,13 @@ const AboutPage = () => {
               <InfiniteMenu items={teamMembers} />
           </div>
       </section>
-
+ 
       {/* 3. THE STORY */}
       <section className="py-32 px-6 bg-gradient-to-b from-transparent via-violet-950/10 to-transparent">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-16 items-center">
-            
-            <motion.div 
+           
+            <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -206,8 +212,8 @@ const AboutPage = () => {
                 </div>
               </div>
             </motion.div>
-
-            <motion.div 
+ 
+            <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -225,58 +231,58 @@ const AboutPage = () => {
                 </div>
               </div>
             </motion.div>
-
+ 
           </div>
         </div>
       </section>
-
+ 
       {/* 4. UNIQUE FEATURES */}
       <section className="py-32 px-6 relative">
         <div className="max-w-7xl mx-auto">
-          <SectionHeader 
-            title="Built Different." 
+          <SectionHeader
+            title="Built Different."
             subtitle="We focused on features that actually drive resolution, not just data entry."
           />
-          
+         
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <FeatureCard 
-              icon={MessageSquare} 
-              title="Real-Time Chat" 
+            <FeatureCard
+              icon={MessageSquare}
+              title="Real-Time Chat"
               desc="Integrated discussion threads allow employees and managers to communicate directly within the ticket context."
               color="from-violet-600"
               delay={0.1}
             />
-            <FeatureCard 
-              icon={Shield} 
-              title="Role-Based Security" 
+            <FeatureCard
+              icon={Shield}
+              title="Role-Based Security"
               desc="Granular JWT-based access control ensures strict data privacy between Employees, Managers, and Admins."
               color="from-blue-600"
               delay={0.2}
             />
-            <FeatureCard 
-              icon={Zap} 
-              title="Automated Escalation" 
+            <FeatureCard
+              icon={Zap}
+              title="Automated Escalation"
               desc="Smart workflows automatically flag overdue tickets to higher management to prevent bottlenecks."
               color="from-amber-500"
               delay={0.3}
             />
-            <FeatureCard 
-              icon={Clock} 
-              title="Fast Resolution" 
+            <FeatureCard
+              icon={Clock}
+              title="Fast Resolution"
               desc="Streamlined UI/UX designed to minimize clicks and maximize speed for busy managers."
               color="from-emerald-500"
               delay={0.4}
             />
-            <FeatureCard 
-              icon={Globe} 
-              title="Multi-Department" 
+            <FeatureCard
+              icon={Globe}
+              title="Multi-Department"
               desc="Scalable architecture that supports IT, HR, Admin, and Finance workflows in a single portal."
               color="from-pink-500"
               delay={0.5}
             />
-            <FeatureCard 
-              icon={Database} 
-              title="Audit Ready" 
+            <FeatureCard
+              icon={Database}
+              title="Audit Ready"
               desc="Every action, status change, and comment is logged permanently for full accountability."
               color="from-cyan-500"
               delay={0.6}
@@ -284,12 +290,12 @@ const AboutPage = () => {
           </div>
         </div>
       </section>
-
-      {/* 5. TECH STACK */}
+ 
+      {/* 5. TECH STACK (SEPARATED FROM ROBOT) */}
       <section className="py-32 px-6 border-t border-white/10 bg-[#080808]">
         <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-white mb-16">Powered By Modern Engineering</h2>
-          
+          <h2 className="text-3xl font-bold text-white mb-16 drop-shadow-lg">Powered By Modern Engineering</h2>
+         
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <TechCard title="Frontend" stack="React + Tailwind + Framer" icon={Code2} />
             <TechCard title="Backend API" stack=".NET 8 Core Web API" icon={Server} />
@@ -298,14 +304,39 @@ const AboutPage = () => {
           </div>
         </div>
       </section>
-
-      {/* FOOTER */}
-      <footer className="py-12 text-center text-slate-600 text-sm border-t border-white/5">
-        <p>&copy; 2025 EncoraOne. Transforming Workplaces.</p>
-      </footer>
-
+ 
+      {/* 6. BOTTOM ROBOT VISUAL SECTION + FOOTER TEXT OVERLAY */}
+      <div className="relative w-full h-[600px] overflow-hidden bg-[#050505] border-t border-white/5">
+         
+         {/* Spline Viewer Container - Scaled to hide watermark */}
+         <div className={`absolute inset-x-0 top-0 h-[120%] transition-all duration-[2000ms] ${isLoaded ? 'opacity-100 blur-0' : 'opacity-0 blur-lg'}`}>
+           <spline-viewer
+              url="https://prod.spline.design/a6XkQdgy5sjlsweN/scene.splinecode"
+              style={{ width: '100%', height: '100%' }}
+           />
+        </div>
+ 
+        {/* Vignette to blend edges */}
+        <div className="absolute inset-0 pointer-events-none bg-radial-gradient-fade" />
+ 
+        {/* COPYRIGHT OVERLAY (No Background, No Footer) */}
+        <div className="absolute bottom-10 inset-x-0 z-20 pointer-events-none flex justify-center">
+            <p className="text-slate-500 text-xs font-medium uppercase tracking-[0.2em] opacity-80 mix-blend-screen">
+                &copy; 2025 EncoraOne. Transforming Workplaces.
+            </p>
+        </div>
+      </div>
+ 
+      <style>{`
+        .bg-radial-gradient-fade {
+            background: radial-gradient(circle at center, transparent 0%, #050505 100%);
+            opacity: 0.4;
+        }
+      `}</style>
+ 
     </div>
   );
 };
-
+ 
 export default AboutPage;
+ 

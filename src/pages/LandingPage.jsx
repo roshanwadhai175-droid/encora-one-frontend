@@ -114,19 +114,6 @@ const LandingPage = () => {
       {/* --- FAQ SECTION --- */}
       <FAQSection />
 
-      {/* --- CONTACT SECTION --- */}
-      <ContactSection />
-
-      {/* --- FOOTER --- */}
-      <footer className="border-t border-white/10 bg-black py-12">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
-          <p>© 2025 EncoraOne. All rights reserved.</p>
-          <div className="flex gap-6 mt-4 md:mt-0">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

@@ -31,14 +31,15 @@ const AuthLayout = ({ children, title, subtitle }) => {
                 <div className="absolute top-[-20%] left-[-20%] w-[60vw] h-[60vw] bg-violet-900/20 rounded-full blur-[120px] pointer-events-none mix-blend-screen" />
                 <div className="absolute bottom-[-20%] right-[-20%] w-[60vw] h-[60vw] bg-indigo-900/20 rounded-full blur-[120px] pointer-events-none mix-blend-screen" />
                 
-                {/* Spline Viewer - Full Screen Background with Dramatic Entrance */}
+                                {/* Spline Viewer - Full Screen Background with Dramatic Entrance */}
                 <div className={`absolute inset-x-0 top-0 h-[120%] transition-all duration-[1500ms] ease-out transform ${isLoaded ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-110 blur-lg'}`}>
-                     <spline-viewer 
-                        url="https://prod.spline.design/gRdmzm24wHl4jQaA/scene.splinecode"
+                     {/* UPDATED SPLINE URL HERE */}
+                     <spline-viewer
+                        url="https://prod.spline.design/SNzyYbJwaar5fagc/scene.splinecode"
                         style={{ width: '100%', height: '100%' }}
                     />
                 </div>
-                
+ 
                 {/* Vignette Overlay to ensure text readability */}
                 <div className="absolute inset-0 bg-radial-gradient-fade pointer-events-none" />
             </div>
